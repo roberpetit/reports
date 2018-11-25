@@ -13,39 +13,62 @@ import utils.reportes.hpqc.model.User;
 
 import com.poiji.bind.Poiji;
 
-public class HpqcReporter {
+public class HpqcDailyReporter {
 	
-	private static final String PATH_HPQC = "src/resources/11-20-2018.xlsx";
-	private static final String PATH_USERS = "src/resources/Users.xlsx";
-	private static final String PATH_STATES = "src/resources/States.xlsx";
+	public static final String PATH_HPQC = "src/resources/11-22-2018.xlsx";
+	public static final String PATH_USERS = "src/resources/Users.xlsx";
+	public static final String PATH_STATES = "src/resources/States.xlsx";
 	
 	public static HPQCReport readFromHpqc() {
-		// Leo archivos
-		File incidentsFile = new File(PATH_HPQC);
+		
 		File usersFile = new File(PATH_USERS);
 		File statesFile = new File(PATH_STATES);
-		// lista de todos los incidentes
-		List<HpqcRow> hpqcTodos = Poiji.fromExcel(incidentsFile, HpqcRow.class );
 		List<User> users = Poiji.fromExcel(usersFile, User.class);
 		List<State> states = Poiji.fromExcel(statesFile, State.class);
 		
-		List<String> teamNames = new ArrayList<String>();
-		teamNames.add("dev");
-		teamNames.add("functional");
-		teamNames.add("testing");
-		teamNames.add("ICBC");
+		return getReport(users, states, PATH_HPQC);
+	}
+
+	/**
+	 * @param users
+	 * @param states
+	 * @return
+	 */
+	public static HPQCReport getReport(List<User> users, List<State> states, String path) {
+		File incidentsFile = new File(path);
+		// lista de todos los incidentes
+		List<HpqcRow> hpqcTodos = Poiji.fromExcel(incidentsFile, HpqcRow.class );
 		
+		List<String> teamNames = new ArrayList<String>();
+		teamNames.add("Desarrollo");
+		teamNames.add("Funcional");
+		teamNames.add("Testing");
+		teamNames.add("ICBC");
+		Date date = extractDateFromFileName(path);
+		
+		//Tabla de incidentes totales
+		//Creo bojeto de relacion teams-estados de incidentes
+		StatesAndTeamsTable tableTotales = new StatesAndTeamsTable(hpqcTodos, "Backlog Total",users,states, teamNames, date);
 				
 		//Filtro los incidentes pertenecientes a r 1.5 y no son mejora
 		List<HpqcRow> backlogFBD = getDetectedInCycleSubset(hpqcTodos, "Release 1.5 INTGRA");
-		Date date = extractDateFromFileName(PATH_HPQC);
 		//Creo bojeto de relacion teams-estados de incidentes
 		StatesAndTeamsTable tableFbd15 = new StatesAndTeamsTable(backlogFBD, "Release 1.5 INTGRA",users,states, teamNames, date);
+
+		// R1: Pruebas QA - R1
+
+		//Filtro los incidentes pertenecientes a r 1.5 y no son mejora
+		List<HpqcRow> backlogQA = getDetectedInCycleSubset(hpqcTodos, "Pruebas QA - R1");
+		//Creo bojeto de relacion teams-estados de incidentes
+		StatesAndTeamsTable tableR1 = new StatesAndTeamsTable(backlogQA, "Pruebas QA - R1",users,states, teamNames, date);
+
 		
 		HPQCReport report = new HPQCReport();
-		
 		List<StatesAndTeamsTable> tables = new ArrayList<StatesAndTeamsTable>();
+		tables.add(tableTotales);
 		tables.add(tableFbd15);
+		tables.add(tableR1);
+
 		report.setTables(tables);
 		return report;
 	}

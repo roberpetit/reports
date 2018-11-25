@@ -1,8 +1,8 @@
 package utils.reportes;
 
 import utils.reportes.hpqc.HPQCReport;
-import utils.reportes.hpqc.HpqcReporter;
-import utils.reportes.hpqc.StatesAndTeamsTable;
+import utils.reportes.hpqc.HpqcAllTimesReporter;
+import utils.reportes.hpqc.HpqcDailyReporter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,12 +13,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class App 
 {
-    public static void main( String[] args )
-    {
-    	HPQCReport hpqcReport = HpqcReporter.readFromHpqc();
+    public static void main( String[] args ) {
     	
-    	ObjectMapper mapper = new ObjectMapper();
+    	System.out.println("Reporte diario:");
+    	generateDailyReport();
 
+    	System.out.println("Gráfico de totales:");
+    	HpqcAllTimesReporter.getTotalsGraphData();
+    	
+    	System.out.println("Gráfico de totales por equipo:");
+    	HpqcAllTimesReporter.getDevGraphDataFromTotalBacklog();
+    	
+    	System.out.println("Gráfico de R1.5 por equipo:");
+    	HpqcAllTimesReporter.getDevGraphDataFromR15();
+
+    }
+    
+    public static void generateDailyReport() {
+		HPQCReport hpqcReport = HpqcDailyReporter.readFromHpqc();
+    	ObjectMapper mapper = new ObjectMapper();
     	try {
 			String jsonInString = mapper.writeValueAsString(hpqcReport);
 			System.out.println(jsonInString);
@@ -26,4 +39,5 @@ public class App
 			e.printStackTrace();
 		}
     }
+    
 }
