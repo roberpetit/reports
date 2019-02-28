@@ -1,0 +1,39 @@
+/* You can add global styles to this file, and also import other style files */
+p-table {
+	border: solid 1px #DDEEEE;
+	border-collapse: collapse;
+	border-spacing: 0;
+	font: normal 13px Arial, sans-serif;
+}
+th  {
+	background: rgb(204, 204, 204);
+	border: solid 1px #DDEEEE;
+	color: #333;
+	padding: 10px;
+	text-align: left;
+	text-shadow: 1px 1px 1px #fff;
+}
+td {
+	border: solid 1px #DDEEEE;
+	color: #333;
+	padding: 10px;
+	text-shadow: 1px 1px 1px #fff;
+}
+
+table {
+	border-collapse: collapse;
+	width:60%;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background: #efefef;
+}
+
+tr:hover {
+  background: #d1d1d1;
+}
