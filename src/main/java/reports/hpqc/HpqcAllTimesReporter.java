@@ -39,12 +39,11 @@ public class HpqcAllTimesReporter {
 	}
 
 	private static Date getDateFromString(String s2) {
-	    SimpleDateFormat sm = new SimpleDateFormat("MM-dd-yyyy");
+	    SimpleDateFormat sm = new SimpleDateFormat("yyyy-MM-dd");
 
 		try {
 			return sm.parse(s2.substring(s2.lastIndexOf('/') + 1, s2.lastIndexOf('.')));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -77,22 +76,25 @@ public class HpqcAllTimesReporter {
 	 */
 	public static String getTotalGraphDataFromReports(List<HPQCReport> reports) {
 		List<Integer> totalesValues = new ArrayList<Integer>();
-		List<Integer> fbdValues = new ArrayList<Integer>();
-		List<Integer> qaValues = new ArrayList<Integer>();
+		List<Integer> cobrosValues = new ArrayList<Integer>();
+		List<Integer> pagosValues = new ArrayList<Integer>();
+		List<Integer> finaValues = new ArrayList<Integer>();
+		List<Integer> otrosValues = new ArrayList<Integer>();
 		List<Date> datesValues = new ArrayList<Date>();
 		HPQCGraphData graph = new HPQCGraphData();
 		
 		for (HPQCReport rep : reports) {
 			totalesValues.add(rep.getTables().get(0).getTotal());
-			fbdValues.add(rep.getTables().get(1).getTotal());
-			qaValues.add(rep.getTables().get(2).getTotal());
-
+			pagosValues.add(rep.getTables().get(1).getTotal());
+			cobrosValues.add(rep.getTables().get(2).getTotal());
+			finaValues.add(rep.getTables().get(3).getTotal());
+			otrosValues.add(rep.getTables().get(4).getTotal());
 			datesValues.add(rep.getTables().get(0).getDate());
 			
+			graph.setFirstValues(totalesValues);
+			graph.setSecondValues(cobrosValues);
+			graph.setThirdValues(pagosValues);
 			graph.setDatesValues(datesValues);
-			graph.setFbdValues(fbdValues);
-			graph.setQaValues(qaValues);
-			graph.setTotalesValues(totalesValues);
 		}
 		return printAsJSON(graph);
 	}
@@ -109,22 +111,22 @@ public class HpqcAllTimesReporter {
 	 */
 	public static String getDevGraphDataFromReports(List<HPQCReport> reports) {
 		List<Integer> dev = new ArrayList<Integer>();
-		List<Integer> functional = new ArrayList<Integer>();
+		List<Integer> icbc = new ArrayList<Integer>();
 		List<Integer> testing = new ArrayList<Integer>();
 		List<Date> datesValues = new ArrayList<Date>();
 		HPQCGraphData graph = new HPQCGraphData();
 		
 		for (HPQCReport rep : reports) {
 			dev.add(Integer.valueOf(rep.getTables().get(0).getTeamColumns().get(0).getState().get("Total").toString()));
-			functional.add(Integer.valueOf(rep.getTables().get(0).getTeamColumns().get(1).getState().get("Total").toString()));
+			icbc.add(Integer.valueOf(rep.getTables().get(0).getTeamColumns().get(1).getState().get("Total").toString()));
 			testing.add(Integer.valueOf(rep.getTables().get(0).getTeamColumns().get(2).getState().get("Total").toString()));
 
 			datesValues.add(rep.getTables().get(0).getDate());
 			
 			graph.setDatesValues(datesValues);
-			graph.setFbdValues(dev);
-			graph.setQaValues(functional);
-			graph.setTotalesValues(testing);
+			graph.setFirstValues(dev);
+			graph.setSecondValues(testing);
+			graph.setThirdValues(icbc);
 		}
 		return printAsJSON(graph);
 	}
@@ -153,9 +155,9 @@ public class HpqcAllTimesReporter {
 			datesValues.add(rep.getTables().get(0).getDate());
 			
 			graph.setDatesValues(datesValues);
-			graph.setFbdValues(dev);
-			graph.setQaValues(functional);
-			graph.setTotalesValues(testing);
+			graph.setFirstValues(dev);
+			graph.setSecondValues(testing);
+			graph.setThirdValues(functional);
 		}
 		return printAsJSON(graph);
 	}
@@ -167,22 +169,22 @@ public class HpqcAllTimesReporter {
 	 */
 	public static String getDevGraphFromR15RegresionFromReports(List<HPQCReport> reports) {
 		List<Integer> dev = new ArrayList<Integer>();
-		List<Integer> functional = new ArrayList<Integer>();
+		List<Integer> icbc = new ArrayList<Integer>();
 		List<Integer> testing = new ArrayList<Integer>();
 		List<Date> datesValues = new ArrayList<Date>();
 		HPQCGraphData graph = new HPQCGraphData();
 		
 		for (HPQCReport rep : reports) {
 			dev.add(Integer.valueOf(rep.getTables().get(2).getTeamColumns().get(0).getState().get("Total").toString()));
-			functional.add(Integer.valueOf(rep.getTables().get(2).getTeamColumns().get(1).getState().get("Total").toString()));
+			icbc.add(Integer.valueOf(rep.getTables().get(2).getTeamColumns().get(1).getState().get("Total").toString()));
 			testing.add(Integer.valueOf(rep.getTables().get(2).getTeamColumns().get(2).getState().get("Total").toString()));
 
 			datesValues.add(rep.getTables().get(0).getDate());
 			
 			graph.setDatesValues(datesValues);
-			graph.setFbdValues(dev);
-			graph.setQaValues(functional);
-			graph.setTotalesValues(testing);
+			graph.setSecondValues(dev);
+			graph.setThirdValues(icbc);
+			graph.setFirstValues(testing);
 		}
 		return printAsJSON(graph);
 	}
@@ -227,9 +229,9 @@ public class HpqcAllTimesReporter {
 			datesValues.add(rep.getTables().get(0).getDate());
 			
 			graph.setDatesValues(datesValues);
-			graph.setFbdValues(newS);
-			graph.setQaValues(open);
-			graph.setTotalesValues(reopen);
+			graph.setSecondValues(newS);
+			graph.setThirdValues(open);
+			graph.setFirstValues(reopen);
 		}
 		return printAsJSON(graph);
 	}
@@ -237,8 +239,7 @@ public class HpqcAllTimesReporter {
 	private static Integer getTotalOfColumn(HPQCReport rep, String col) {
 		Integer sum = Integer.valueOf(rep.getTables().get(0).getTeamColumns().get(0).getState().get(col).toString())
 				+ Integer.valueOf(rep.getTables().get(0).getTeamColumns().get(1).getState().get(col).toString())
-				+ Integer.valueOf(rep.getTables().get(0).getTeamColumns().get(2).getState().get(col).toString())
-				+ Integer.valueOf(rep.getTables().get(0).getTeamColumns().get(3).getState().get(col).toString());
+				+ Integer.valueOf(rep.getTables().get(0).getTeamColumns().get(2).getState().get(col).toString());
 		return sum;
 	}
 	

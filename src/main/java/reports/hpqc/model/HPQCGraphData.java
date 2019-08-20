@@ -4,27 +4,27 @@ import java.util.Date;
 import java.util.List;
 
 public class HPQCGraphData {
-	private List<Integer> totalesValues;
-	private List<Integer> fbdValues;
-	private List<Integer> qaValues;
+	private List<Integer> firstValues;
+	private List<Integer> secondValues;
+	private List<Integer> thirdValues;
 	private List<Date> datesValues;
-	public List<Integer> getTotalesValues() {
-		return totalesValues;
+	public List<Integer> getFirstValues() {
+		return firstValues;
 	}
-	public void setTotalesValues(List<Integer> totalesValues) {
-		this.totalesValues = totalesValues;
+	public void setFirstValues(List<Integer> totalesValues) {
+		this.firstValues = totalesValues;
 	}
-	public List<Integer> getFbdValues() {
-		return fbdValues;
+	public List<Integer> getSecondValues() {
+		return secondValues;
 	}
-	public void setFbdValues(List<Integer> fbdValues) {
-		this.fbdValues = fbdValues;
+	public void setSecondValues(List<Integer> fbdValues) {
+		this.secondValues = fbdValues;
 	}
-	public List<Integer> getQaValues() {
-		return qaValues;
+	public List<Integer> getThirdValues() {
+		return thirdValues;
 	}
-	public void setQaValues(List<Integer> qaValues) {
-		this.qaValues = qaValues;
+	public void setThirdValues(List<Integer> qaValues) {
+		this.thirdValues = qaValues;
 	}
 	public List<Date> getDatesValues() {
 		return datesValues;

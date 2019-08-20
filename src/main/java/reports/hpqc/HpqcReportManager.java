@@ -35,22 +35,32 @@ public class HpqcReportManager {
 		List<String> fileNames = readFilesNames();
 		List<HPQCReport> reports = new ArrayList<HPQCReport>();
 		
+		
 		for (String fileName : fileNames) {
 			HPQCReport rep = HpqcDailyReporter.getReport(users, states, fileName);
 			reports.add(rep);
 		}
-		
-		/**
-		 * Datos para las tablas:
-		 */
-		// tabla de totales
+
+		// Tablas de estado del día
+		report+="public initTableData: any =  ";
+		//report+=reports.get(reports.size() - 1);
+		report+=HpqcDailyReporter.getDailyReport(users, states, fileNames.get(fileNames.size()-1));
+		report+="\n";
+
+		// Grafico 1. Totales - cobros - pagos
 		report+="public initGraphServiceDataTotales: InitGraphData = ";
 		report+=HpqcAllTimesReporter.getTotalGraphDataFromReports(reports);
+		
 		report+="\n";
-		// tabla de totales por equipo
+		// tabla de totales por equipo. dev - testing - icbc
 		report+="public initGraphServiceDataTotalesPorEquipo: InitGraphData = ";
 		report+=HpqcAllTimesReporter.getDevGraphDataFromReports(reports);
 		report+="\n";
+		// tabla de totales de new, open y reopen
+		report+="public initGraphServiceDataCreatedTotals: InitGraphData = ";
+		report+=HpqcAllTimesReporter.getCreatedTotalsFromReports(reports);
+		report+="\n";
+		/**
 		// tabla de totales Release 1.5 INTGRA por equipo
 		report+="public initGraphServiceDataR15INTGRAPorEquipo: InitGraphData = ";
 		report+=HpqcAllTimesReporter.getDevGraphFromR15FromReports(reports);
@@ -61,13 +71,8 @@ public class HpqcReportManager {
 		report+=HpqcAllTimesReporter.getDevGraphFromR15RegresionFromReports(reports);
 		report+="\n";
 		
-		// tabla de totales de new, open y reopen
-		report+="public initGraphServiceDataCreatedTotals: InitGraphData = ";
-		report+=HpqcAllTimesReporter.getCreatedTotalsFromReports(reports);
-		report+="\n";
 		//
-		report+="public initTableData: any =  ";
-		report+=HpqcDailyReporter.getDailyReport(users, states, fileNames.get(fileNames.size()-1));
+		 */
 
 		return report;
 	}
@@ -131,9 +136,9 @@ public class HpqcReportManager {
 			datesValues.add(rep.getTables().get(0).getDate());
 			
 			graph.setDatesValues(datesValues);
-			graph.setFbdValues(fbdValues);
-			graph.setQaValues(qaValues);
-			graph.setTotalesValues(totalesValues);
+			graph.setSecondValues(fbdValues);
+			graph.setThirdValues(qaValues);
+			graph.setFirstValues(totalesValues);
 		}
 		return printAsJSON(graph);
 	}
@@ -155,9 +160,9 @@ public class HpqcReportManager {
 			datesValues.add(rep.getTables().get(0).getDate());
 			
 			graph.setDatesValues(datesValues);
-			graph.setFbdValues(dev);
-			graph.setQaValues(functional);
-			graph.setTotalesValues(testing);
+			graph.setSecondValues(dev);
+			graph.setThirdValues(functional);
+			graph.setFirstValues(testing);
 		}
 		return printAsJSON(graph);
 	}
@@ -177,9 +182,9 @@ public class HpqcReportManager {
 			datesValues.add(rep.getTables().get(0).getDate());
 			
 			graph.setDatesValues(datesValues);
-			graph.setFbdValues(dev);
-			graph.setQaValues(functional);
-			graph.setTotalesValues(testing);
+			graph.setSecondValues(dev);
+			graph.setThirdValues(functional);
+			graph.setFirstValues(testing);
 		}
 		return printAsJSON(graph);
 	}
@@ -215,9 +220,9 @@ public class HpqcReportManager {
 			datesValues.add(rep.getTables().get(0).getDate());
 			
 			graph.setDatesValues(datesValues);
-			graph.setFbdValues(newS);
-			graph.setQaValues(open);
-			graph.setTotalesValues(reopen);
+			graph.setSecondValues(newS);
+			graph.setThirdValues(open);
+			graph.setFirstValues(reopen);
 		}
 		return printAsJSON(graph);
 	}
